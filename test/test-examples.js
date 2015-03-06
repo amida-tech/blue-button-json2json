@@ -8,6 +8,46 @@ describe('examples', function () {
     var bbj2j = require('../index');
     var j2j = bbj2j.instance();
 
+    it('usage', function () {
+        var upper = function (input) {
+            return input ? input.toUpperCase() : null;
+        };
+
+        var template = {
+            content: {
+                dest_a: {
+                    dataKey: 'a.c'
+                },
+                dest_b: {
+                    content: {
+                        dest_b0: {
+                            value: upper,
+                            dataKey: 'b.c'
+                        },
+                        dest_b1: {
+                            value: upper,
+                            dataKey: 'd'
+                        }
+                    },
+                    dataKey: 'a'
+                }
+            }
+        };
+
+        var input = {
+            a: {
+                b: {
+                    c: 'value_0'
+                },
+                c: 'value_2',
+                d: 'value_1'
+            }
+        };
+
+        var r = j2j.run(template, input);
+        console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VALUE_1'}}        
+    });
+
     xit('dataKey - 0', function () {
         var template = {
             dataKey: 'a'
@@ -227,7 +267,7 @@ describe('examples', function () {
         console.log(r); // name: {last: 'DOE', first: 'JOE'}
     });
 
-    it('constant - 0', function () {
+    xit('constant - 0', function () {
         var template = {
             content: {
                 codes: {
@@ -252,7 +292,7 @@ describe('examples', function () {
         console.log(r); // {codes: {Y: 'yellow', R: 'red'}, color: {back: 'Y', fore: 'R'}}
     });
 
-    it('constant - 1', function () {
+    xit('constant - 1', function () {
         var template = {
             constant: 'CONST'
         };
@@ -307,7 +347,7 @@ describe('examples', function () {
         console.log(result2); // null
     });
 
-    it('dataTransform - 0', function () {
+    xit('dataTransform - 0', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -378,7 +418,7 @@ describe('examples', function () {
         console.log(r2); // {last: 'DOE', first: 'unknown'}
     });
 
-    it('multiple - 0', function () {
+    xit('multiple - 0', function () {
         var template = {
             content: {
                 last: {
@@ -467,7 +507,7 @@ describe('examples', function () {
         console.log(r1); // 'UNKNOWN'
     });
 
-    it('assign - 0', function () {
+    xit('assign - 0', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -494,5 +534,130 @@ describe('examples', function () {
             givenName: 'JOE'
         });
         console.log(r); // {id: 'JDOE', last: 'DOE', first: 'JOE'}
+    });
+
+    xit('override - dataKeyPieceOverride', function () {
+        var peopleDb = {
+            '1': {
+                lastName: 'Doe',
+                firstName: 'Joe',
+                spouseId: 2
+            },
+            '2': {
+                lastName: 'Doe',
+                firstName: 'Jane',
+                spouseId: 1
+            },
+            '3': {
+                lastName: 'Eod',
+                firstName: 'Dave'
+            }
+        };
+
+        var override = {
+            peopleDb: peopleDb,
+            dataKeyPieceOverride: function (input, dataKeyPiece) {
+                if (input && (dataKeyPiece === 'spouseId')) {
+                    var person = this.peopleDb[input];
+                    if (person) {
+                        return person;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return input;
+                }
+            }
+        };
+
+        var j2j_od = bbj2j.instance(override);
+
+        var nameTemplate = {
+            content: {
+                last: {
+                    dataKey: 'lastName'
+                },
+                first: {
+                    dataKey: 'firstName'
+                }
+            }
+        };
+
+        var template = {
+            content: {
+                name: nameTemplate,
+                spouseName: {
+                    value: nameTemplate,
+                    dataKey: 'spouseId'
+                }
+            }
+        };
+
+        var r0 = j2j_od.run(template, peopleDb[1]);
+        console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe', first: 'Jane'}}
+
+        var r1 = j2j_od.run(template, peopleDb[3]);
+        console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
+    });
+
+    it('override - actionKey', function () {
+        var meds = {
+            'aspirin': {
+                id: 1
+            },
+        };
+
+        var override = {
+            meds: meds,
+            external: function (template, input) {
+                console.log(input);
+                var te = template.external;
+                if (!input) {
+                    return null;
+                }
+                var external = this.meds[input];
+                if (external) {
+                    return external.id;
+                } else {
+                    var newId = Object.keys(meds).length + 1;
+                    meds[input] = {
+                        id: newId
+                    };
+                    return newId;
+                }
+            }
+        };
+
+        var j2j_od_e = bbj2j.instance(override, ['external']);
+
+        var nameTemplate = {
+            content: {
+                last: {
+                    dataKey: 'lastName'
+                },
+                first: {
+                    dataKey: 'firstName'
+                }
+            }
+        };
+
+        var template = {
+            content: {
+                name: nameTemplate,
+                meds: {
+                    external: {},
+                    dataKey: 'meds'
+                }
+            }
+        };
+
+        var r = j2j_od_e.run(template, {
+            lastName: 'Doe',
+            firstName: 'Joe',
+            meds: ['claritin', 'aspirin', 'albuterol']
+        });
+        console.log(r); // {name: {last: 'Doe', first: 'Joe'}, meds: [2, 1, 3]}
+
+        console.log(meds); // {aspirin: {id: 1}, claritin: {id: 2}, albuteral: {id: 3}}
     });
 });
