@@ -17,6 +17,17 @@ exports.template = {
         },
         'prop_d.deep': {
             dataKey: 'a.e'
+        },
+        prop_missing: {
+            dataKey: 'a.xx'
+        },
+        prop_default: {
+            content: {
+                missing: {
+                    dataKey: 'a.yy'
+                }
+            },
+            default: 'default value'
         }
     }
 };
@@ -45,5 +56,6 @@ exports.expected = {
             ea: 'value_2',
             eb: 'value_3'
         }
-    }
+    },
+    prop_default: 'default value'
 };
