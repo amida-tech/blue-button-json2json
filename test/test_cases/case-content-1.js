@@ -24,7 +24,9 @@ var nestedTemplate = {
             dataKey: 'detail.notes',
             dataTransform: function (input) {
                 return input.reduce(function (r, e) {
-                    r += e.grade;
+                    if (e) {
+                        r += e.grade;
+                    }
                     return r;
                 }, 0);
             }
@@ -44,7 +46,10 @@ exports.template = {
     }
 };
 
-exports.input = {
+exports.inputs = [];
+exports.expecteds = [];
+
+exports.inputs[0] = {
     summary: 'Summary Of Grades',
     detail: {
         name: 'Joe',
@@ -61,7 +66,7 @@ exports.input = {
     }
 };
 
-exports.expected = {
+exports.expecteds[0] = {
     title: 'GRADE',
     summary: 'Summary Of Grades',
     info: {
@@ -71,5 +76,47 @@ exports.expected = {
         first: 'Math: 81',
         grades: [81, 50, 25],
         total: 156
+    }
+};
+
+exports.inputs[1] = {
+    summary: 'Summary Of Grades',
+    detail: {
+        name: 'Joe',
+        notes: [null, {
+            subject: 'Reading',
+            grade: 50
+        }, {
+            subject: 'Writing',
+            grade: 25
+        }]
+    }
+};
+
+exports.expecteds[1] = {
+    title: 'GRADE',
+    summary: 'Summary Of Grades',
+    info: {
+        name: 'Joe',
+        subjects: ['Reading', 'Writing'],
+        grades: [50, 25],
+        total: 75
+    }
+};
+
+exports.inputs[2] = {
+    summary: 'Summary Of Grades',
+    detail: {
+        name: 'Joe',
+        notes: []
+    }
+};
+
+exports.expecteds[2] = {
+    title: 'GRADE',
+    summary: 'Summary Of Grades',
+    info: {
+        name: 'Joe',
+        total: 0
     }
 };

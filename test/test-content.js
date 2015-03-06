@@ -18,7 +18,11 @@ describe('content', function () {
     });
 
     it('case-content-1: array', function () {
-        var actual = engine.run(case_1.template, case_1.input);
-        expect(actual).to.deep.equal(case_1.expected);
+        var template = case_1.template;
+        var n = case_1.inputs.length;
+        for (var i = 0; i < n; ++i) {
+            var actual = engine.run(template, case_1.inputs[i]);
+            expect(actual).to.deep.equal(case_1.expecteds[i]);
+        }
     });
 });

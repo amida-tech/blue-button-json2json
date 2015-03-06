@@ -45,7 +45,14 @@ describe('examples', function () {
         };
 
         var r = j2j.run(template, input);
-        console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VALUE_1'}}        
+        //console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VALUE_1'}}        
+        expect(r).to.deep.equal({
+            dest_a: 'value_2',
+            dest_b: {
+                dest_b0: 'VALUE_0',
+                dest_b1: 'VALUE_1'
+            }
+        });
     });
 
     it('dataKey - 0', function () {
@@ -57,19 +64,24 @@ describe('examples', function () {
             a: 1,
             b: 2
         });
-        console.log(r0); // 1
+        //console.log(r0); // 1
+        expect(r0).to.equal(1);
 
         var r1 = j2j.run(template, {
             b: 2
         });
-        console.log(r1); // null
+        //console.log(r1); // null
+        expect(r1).to.equal(null);
 
         var r2 = j2j.run(template, {
             a: {
                 b: 2
             }
         });
-        console.log(r2); // {b: 2}
+        //console.log(r2); // {b: 2}
+        expect(r2).to.deep.equal({
+            b: 2
+        });
     });
 
     it('dataKey - 1', function () {
@@ -84,12 +96,14 @@ describe('examples', function () {
                 }
             }
         });
-        console.log(r0); // 'value'
+        //console.log(r0); // 'value'
+        expect(r0).to.equal('value');
 
         var r1 = j2j.run(template, {
             a: 2
         });
-        console.log(r1); // null
+        //console.log(r1); // null
+        expect(r1).to.equal(null);
     });
 
     it('dataKey - 2', function () {
@@ -108,7 +122,8 @@ describe('examples', function () {
                 }]
             }
         });
-        console.log(r); // ['value_0', 'value_2']
+        //console.log(r); // ['value_0', 'value_2']
+        expect(r).to.deep.equal(['value_0', 'value_2']);
     });
 
     it('dataKey - 3', function () {
@@ -127,7 +142,8 @@ describe('examples', function () {
                 }]
             }
         });
-        console.log(r); // 'value_0'
+        //console.log(r); // 'value_0'
+        expect(r).to.equal('value_0');
     });
 
     it('dataKey - 4', function () {
@@ -141,21 +157,24 @@ describe('examples', function () {
                 c: 2
             }
         });
-        console.log(r0); // 1
+        //console.log(r0); // 1
+        expect(r0).to.equal(1);
 
         var r1 = j2j.run(template, {
             a: {
                 c: 3
             }
         });
-        console.log(r1); // 3
+        //console.log(r1); // 3
+        expect(r1).to.equal(3);
 
         var r2 = j2j.run(template, {
             a: {
                 d: 4
             }
         });
-        console.log(r2); // null
+        //console.log(r2); // null
+        expect(r2).to.equal(null);
     });
 
     it('value - 0', function () {
@@ -169,7 +188,8 @@ describe('examples', function () {
         var r = j2j.run(template, {
             name: 'joe'
         });
-        console.log(r); // JOE
+        //console.log(r); // 'JOE'
+        expect(r).to.equal('JOE');
     });
 
     it('value - 1', function () {
@@ -180,7 +200,8 @@ describe('examples', function () {
         };
 
         var r = j2j.run(template, 'joe');
-        console.log(r); // JOE
+        //console.log(r); // JOE
+        expect(r).to.equal('JOE');
     });
 
     it('value - 2', function () {
@@ -192,7 +213,8 @@ describe('examples', function () {
         var r = j2j.run(template, {
             name: 'joe'
         });
-        console.log(r); // 'names are classified'
+        //console.log(r); // 'names are classified'
+        expect(r).to.equal('names are classified');
     });
 
     it('value - 3', function () {
@@ -213,7 +235,8 @@ describe('examples', function () {
                 b: 'value'
             }
         });
-        console.log(r); // 'VALUE'
+        //console.log(r); // 'VALUE'
+        expect(r).to.equal('VALUE');
     });
 
     it('content - 0', function () {
@@ -245,7 +268,14 @@ describe('examples', function () {
             givenName: 'JOE',
             birthYear: 1980
         });
-        console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
+        //console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
+        expect(r).to.deep.equal({
+            name: {
+                last: 'DOE',
+                first: 'JOE'
+            },
+            age: 35
+        });
     });
 
     it('content - 1', function () {
@@ -264,7 +294,13 @@ describe('examples', function () {
             familyName: 'DOE',
             givenName: 'JOE'
         });
-        console.log(r); // name: {last: 'DOE', first: 'JOE'}
+        //console.log(r); // {name: {last: 'DOE', first: 'JOE'}}
+        expect(r).to.deep.equal({
+            name: {
+                last: 'DOE',
+                first: 'JOE'
+            }
+        });
     });
 
     it('constant - 0', function () {
@@ -289,7 +325,17 @@ describe('examples', function () {
             backgroundColor: 'Y',
             foreGroundColor: 'R'
         });
-        console.log(r); // {codes: {Y: 'yellow', R: 'red'}, color: {back: 'Y', fore: 'R'}}
+        //console.log(r); // {codes: {Y: 'yellow', R: 'red'}, color: {back: 'Y', fore: 'R'}}
+        expect(r).to.deep.equal({
+            codes: {
+                Y: 'yellow',
+                R: 'red'
+            },
+            color: {
+                back: 'Y',
+                fore: 'R'
+            }
+        });
     });
 
     it('constant - 1', function () {
@@ -300,7 +346,8 @@ describe('examples', function () {
         var r = j2j.run(template, {
             any: 'any'
         });
-        console.log(r); // 'CONST'
+        //console.log(r); // 'CONST'
+        expect(r).to.equal('CONST');
     });
 
     it('existsWhen', function () {
@@ -327,8 +374,10 @@ describe('examples', function () {
             b: 'value_b',
             public: true
         });
-        console.log(result0.dest_a); // 'value_a'
-        console.log(result0.dest_b); // undefined
+        //console.log(result0.dest_a); // 'value_a'
+        //console.log(result0.dest_b); // undefined
+        expect(result0.dest_a).to.equal('value_a');
+        expect(result0.dest_b).to.equal(undefined);
 
         var result1 = j2j.run(template, {
             a: 'value_a',
@@ -336,15 +385,18 @@ describe('examples', function () {
             c: 0,
             public: true
         });
-        console.log(result1.dest_a); // 'value_a'
-        console.log(result1.dest_b); // 'value_b'
+        //console.log(result1.dest_a); // 'value_a'
+        //console.log(result1.dest_b); // 'value_b'
+        expect(result1.dest_a).to.equal('value_a');
+        expect(result1.dest_b).to.equal('value_b');
 
         var result2 = j2j.run(template, {
             a: 'value_a',
             b: 'value_b',
             c: 0
         });
-        console.log(result2); // null
+        //console.log(result2); // null
+        expect(result2).to.equal(null);
     });
 
     it('dataTransform - 0', function () {
@@ -384,7 +436,14 @@ describe('examples', function () {
             firstName: 'JOE',
             birthYear: 1980
         });
-        console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
+        //console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
+        expect(r).to.deep.equal({
+            name: {
+                last: 'DOE',
+                first: 'JOE'
+            },
+            age: 35
+        });
     });
 
     it('default - 0', function () {
@@ -405,17 +464,29 @@ describe('examples', function () {
             familyName: 'DOE',
             givenName: 'JOE'
         });
-        console.log(r0); // {last: 'DOE', first: 'JOE'}
+        //console.log(r0); // {last: 'DOE', first: 'JOE'}
+        expect(r0).to.deep.equal({
+            last: 'DOE',
+            first: 'JOE'
+        });
 
         var r1 = j2j.run(template, {
             familyName: 'DOE'
         });
-        console.log(r1); // {last: 'unknown', first: 'JOE'}
+        //console.log(r1); // {last: 'DOE', first: 'unknown'}
+        expect(r1).to.deep.equal({
+            last: 'DOE',
+            first: 'unknown'
+        });
 
         var r2 = j2j.run(template, {
             givenName: 'JOE'
         });
-        console.log(r2); // {last: 'DOE', first: 'unknown'}
+        //console.log(r2); // {last: 'unknown', first: 'JOE'}
+        expect(r2).to.deep.equal({
+            last: 'unknown',
+            first: 'JOE'
+        });
     });
 
     it('multiple - 0', function () {
@@ -435,7 +506,11 @@ describe('examples', function () {
             familyName: 'DOE',
             givenName: 'JOE'
         });
-        console.log(r); // {last: 'DOE', given: ['JOE']}
+        //console.log(r); // {last: 'DOE', given: ['JOE']}
+        expect(r).to.deep.equal({
+            last: 'DOE',
+            given: ['JOE']
+        });
     });
 
     it('firstOf - 0', function () {
@@ -463,17 +538,23 @@ describe('examples', function () {
             familyName: 'DOE',
             givenName: 'JOE'
         });
-        console.log(r0); // {last: 'DOE', first: 'JOE'}
+        //console.log(r0); // {last: 'DOE', first: 'JOE'}
+        expect(r0).to.deep.equal({
+            last: 'DOE',
+            first: 'JOE'
+        });
 
         var r1 = j2j.run(template, {
             familyName: 'DOE'
         });
-        console.log(r1); // 'DOE'
+        //console.log(r1); // 'DOE'
+        expect(r1).to.equal('DOE');
 
         var r2 = j2j.run(template, {
             givenName: 'JOE'
         });
-        console.log(r2); // null
+        //console.log(r2); // null
+        expect(r2).to.equal(null);
     });
 
     it('firstOf - 1', function () {
@@ -499,12 +580,17 @@ describe('examples', function () {
             familyName: 'DOE',
             givenName: 'JOE'
         });
-        console.log(r0); // {last: 'DOE', first: 'JOE'}
+        //console.log(r0); // {last: 'DOE', first: 'JOE'}
+        expect(r0).to.deep.equal({
+            last: 'DOE',
+            first: 'JOE'
+        });
 
         var r1 = j2j.run(template, {
             familyName: 'DOE'
         });
-        console.log(r1); // 'UNKNOWN'
+        //console.log(r1); // 'UNKNOWN'
+        expect(r1).to.equal('UNKNOWN');
     });
 
     it('assign - 0', function () {
@@ -533,7 +619,12 @@ describe('examples', function () {
             familyName: 'DOE',
             givenName: 'JOE'
         });
-        console.log(r); // {id: 'JDOE', last: 'DOE', first: 'JOE'}
+        //console.log(r); // {id: 'JDOE', last: 'DOE', first: 'JOE'}
+        expect(r).to.deep.equal({
+            id: 'JDOE',
+            last: 'DOE',
+            first: 'JOE'
+        });
     });
 
     it('override - dataKeyPieceOverride', function () {
@@ -594,10 +685,26 @@ describe('examples', function () {
         };
 
         var r0 = j2j_od.run(template, peopleDb[1]);
-        console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe', first: 'Jane'}}
+        //console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe', first: 'Jane'}}
+        expect(r0).to.deep.equal({
+            name: {
+                last: 'Doe',
+                first: 'Joe'
+            },
+            spouseName: {
+                last: 'Doe',
+                first: 'Jane'
+            }
+        });
 
         var r1 = j2j_od.run(template, peopleDb[3]);
-        console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
+        //console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
+        expect(r1).to.deep.equal({
+            name: {
+                last: 'Eod',
+                first: 'Dave'
+            }
+        });
     });
 
     it('override - actionKey', function () {
@@ -610,7 +717,6 @@ describe('examples', function () {
         var override = {
             meds: meds,
             external: function (template, input) {
-                console.log(input);
                 var te = template.external;
                 if (!input) {
                     return null;
@@ -656,8 +762,26 @@ describe('examples', function () {
             firstName: 'Joe',
             meds: ['claritin', 'aspirin', 'albuterol']
         });
-        console.log(r); // {name: {last: 'Doe', first: 'Joe'}, meds: [2, 1, 3]}
+        //console.log(r); // {name: {last: 'Doe', first: 'Joe'}, meds: [2, 1, 3]}
+        expect(r).to.deep.equal({
+            name: {
+                last: 'Doe',
+                first: 'Joe'
+            },
+            meds: [2, 1, 3]
+        });
 
-        console.log(meds); // {aspirin: {id: 1}, claritin: {id: 2}, albuteral: {id: 3}}
+        //console.log(meds); // {aspirin: {id: 1}, claritin: {id: 2}, albuterol: {id: 3}}
+        expect(meds).to.deep.equal({
+            aspirin: {
+                id: 1
+            },
+            claritin: {
+                id: 2
+            },
+            albuterol: {
+                id: 3
+            }
+        });
     });
 });

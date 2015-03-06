@@ -346,7 +346,7 @@ var r = j2j.run(template, {
     familyName: 'DOE',
     givenName: 'JOE'
 });
-console.log(r); // name: {last: 'DOE', first: 'JOE'}
+console.log(r); // {name: {last: 'DOE', first: 'JOE'}}
 ```
 
 <a name="constant" />
@@ -510,12 +510,12 @@ console.log(r0); // {last: 'DOE', first: 'JOE'}
 var r1 = j2j.run(template, {
     familyName: 'DOE'
 });
-console.log(r1); // {last: 'unknown', first: 'JOE'}
+console.log(r1); // {last: 'DOE', first: 'unknown'}
 
 var r2 = j2j.run(template, {
     givenName: 'JOE'
 });
-console.log(r2); // {last: 'DOE', first: 'unknown'}
+console.log(r2); // {last: 'unknown', first: 'JOE'}
 ```
 
 <a name="multiple" />
@@ -752,7 +752,6 @@ var meds = {
 var override = {
     meds: meds,
     external: function (template, input) {
-        console.log(input);
         var te = template.external;
         if (!input) {
             return null;
@@ -800,7 +799,7 @@ var r = j2j_od_e.run(template, {
 });
 console.log(r); // {name: {last: 'Doe', first: 'Joe'}, meds: [2, 1, 3]}
 
-console.log(meds); // {aspirin: {id: 1}, claritin: {id: 2}, albuteral: {id: 3}}
+console.log(meds); // {aspirin: {id: 1}, claritin: {id: 2}, albuterol: {id: 3}}
 ```
 Here we added `external` to `actionKeys`.  Note that for this simple example, `external` is assigned to an empty object but in general it can be anything including other templates.  You can `run` the templates by `this.run(te, input)` where `te` is the value of `external` as demontrated above.
 
