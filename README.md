@@ -12,7 +12,7 @@ This library provides a template rules based formalism to describe JSON to JSON 
 
 ## Usage
 
-In its most basic form JSON to JSON transformation are desribed by a template object where `content` objects recursively describe destination keys, `dataKey` objects describe source keys, and `value` functions describe formatting
+In its most basic form JSON to JSON transformations are desribed by a template object where `content` objects recursively describe destination keys, `dataKey` objects describe source keys, and `value` functions describe formatting
 ```js
 var upper = function(input) {
 	return input ? input.toUpperCase() : null;
@@ -219,6 +219,7 @@ var template = {
 var r = j2j.run(template, 'joe');
 console.log(r); // JOE
 ```
+[blue-button-util]((https://github.com/amida-tech/blue-button-util)) object library contains useful functions that can be used.
 
 This rule can be used to return a primary data type
 ```js
