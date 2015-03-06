@@ -12,7 +12,7 @@ This library provides a template rules based formalism to describe JSON to JSON 
 
 ## Usage
 
-In in its most basic form JSON to JSON transformation are desribed by a template object where `content` objects describe destination keys, `dataKey` objects desribe source keys, and `value` functions describe formatting
+In its most basic form JSON to JSON transformation are desribed by a template object where `content` objects recursively describe destination keys, `dataKey` objects describe source keys, and `value` functions describe formatting
 ```js
 var upper = function(input) {
 	return input ? input.toUpperCase() : null;
@@ -39,7 +39,7 @@ var template = {
     }
 };
 ```
-An engine instance from available blue-button-json2json and can be used to transform an `input` as described by the template
+An engine instance is available from blue-button-json2json and can be used to transform an `input` as described by the template
 ```js
 var bbj2j = require('blue-button-json2json');
 var j2j = bbj2j.instance();
@@ -60,6 +60,19 @@ console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VA
 
 ## Standard Template Rules
 
+The following are the list of all keys that have special meaning in the template objects
+- [`dataKey`](#dataKey)
+- [`value`](#value)
+- [`content`](#content)
+- [`constant`](#constant)
+- [`existsWhen`](#existsWhen)
+- [`dataTransform`](#dataTransform)
+- [`default`](#default)
+- [`multiple`](#multiple)
+- [`firstOf`](#firstOf)
+- [`assign`](#assign)
+
+<a name="dataKey" />
 #### `dataKey` rule
 
 This rule selects a particular property of input
@@ -150,7 +163,7 @@ var r = j2j.run(template, {
 console.log(r); // 'value_0'
 ```
 
-`dataKey` can be an array.  In that case the first deep property that evaluates to a non null value is selected
+`dataKey` can be an array.  In that case the first deep property that evaluates to a value that is not `null` is selected
 ```js
 var template = {
     dataKey: ['a.b', 'a.c']
@@ -179,7 +192,8 @@ var r2 = j2j.run(template, {
 console.log(r2); // null
 ```
 
-### `value` rule
+<a name="value" />
+#### `value` rule
 
 This rule is primarily used to format `input` or `input` property that is selected by `dataKey`.  In this case it is assigned to a function
 ```js
@@ -206,7 +220,7 @@ var r = j2j.run(template, 'joe');
 console.log(r); // JOE
 ```
 
-This rule can be used simply to return a primary data type
+This rule can be used to return a primary data type
 ```js
 var template = {
     value: 'names are classified',
@@ -241,9 +255,10 @@ var r = j2j.run(template, {
 console.log(r); // 'VALUE'
 ```
 
-### `content` rule
+<a name="content" />
+#### `content` rule
 
-This rule is used describe a new object based on `input`.  The property keys of the `content` becomes the properties in the destination object.  The property values of `content` are primarily other templates
+This rule is used to describe a new object based on `input`.  The property keys of the `content` becomes the properties in the destination object.  The property values of `content` are primarily other templates
 ```js
 var nameTemplate = {
     content: {
@@ -276,7 +291,7 @@ var r = j2j.run(template, {
 console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
 ```
 
-The `content` property values can also be formatting functions or a primary data type which shortcuts the need to use `value` rule for those cases
+The `content` property values can also be formatting functions or primary data types which shortcuts the need to use `value` rule for those cases
 ```js
 var nameTemplate = {
     content: {
@@ -314,7 +329,7 @@ var r = j2j.run(template, {
 console.log(r); // {type: 'Report', title: 'Mr.', name: {last: 'DOE', first: 'JOE'}, age: 35}
 ```
 
-The `content` properties keys themselves be deep
+The `content` property keys can be deep
 ```js
 var template = {
     content: {
@@ -334,6 +349,7 @@ var r = j2j.run(template, {
 console.log(r); // name: {last: 'DOE', first: 'JOE'}
 ```
 
+<a name="constant" />
 #### `constant` rule
 
 When values in `value` rule and property values in `content` rule are objects, they are assumed to be nested templates.  `constant` rule makes it possible to define a constant object within template
@@ -374,6 +390,7 @@ var r = j2j.run(template, {
 console.log(r); // 'CONST'
 ```
 
+<a name="existsWhen" />
 #### `existsWhen` rule
 
 This rule determines if a property or value exists.  It must be a predicate.  A set of most common predicates are available from [blue-button-util](https://github.com/amida-tech/blue-button-util) predicate library.  This rule is evaluated before any other rule on the same level.
@@ -422,9 +439,10 @@ var result2 = j2j.run(template, {
 console.log(result2); // null
 ```
 
+<a name="dataTransform" />
 #### `dataTransform` rule
 
-This rule transforms `input` so that existing templates can be re-used
+This rule transforms `input` so that existing templates can be reused
 ```js
 var nameTemplate = {
     content: {
@@ -465,9 +483,10 @@ var r = j2j.run(template, {
 console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
 ```
 
+<a name="default" />
 #### `default` rule
 
-This rule can be used to assign default values after templates are evaluated to be 'null'
+This rule can be used to assign default values after templates are evaluated to be `null`
 ```js
 var template = {
     content: {
@@ -499,6 +518,7 @@ var r2 = j2j.run(template, {
 console.log(r2); // {last: 'DOE', first: 'unknown'}
 ```
 
+<a name="multiple" />
 #### `multiple` rule
 
 This rule can be change a template evaluted value into a one element array.
@@ -522,6 +542,7 @@ var r = j2j.run(template, {
 console.log(r); // {last: 'DOE', given: ['JOE']}
 ```
 
+<a name="firstOf" />
 #### `firstOf` rule
 
 This rule must be assigned to an array of other templates and selects the first one that does not evaluate to `null`
@@ -595,6 +616,7 @@ var r1 = j2j.run(template, {
 console.log(r1); // 'UNKNOWN'
 ```
 
+<a name="assign" />
 #### `assign` rule
 
 This rule accepts an array of other templates that generate object results and works similar to [lodash assign method](https://lodash.com/docs#assign).  `assign` rule is primarily used to reuse existing templates to obtain a new one
@@ -640,13 +662,14 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `runForArray`
 - `evaluateDataKey`
 - `evaluateValue`
-- 'actionKeys'
+- `actionKeys`
 - `dataKeyPieceOverride`
 - `dataKeyArrayOverride`
 - `dataKeyToInputForArray`
 - `dataKeyToInput`
 - `dataKeyArrayToInput`
-`run` is the entry point. `content`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys`.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
+
+`run` is the entry point. `content`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
 
 ### Overrides To Existing Keys
 
@@ -779,7 +802,7 @@ console.log(r); // {name: {last: 'Doe', first: 'Joe'}, meds: [2, 1, 3]}
 
 console.log(meds); // {aspirin: {id: 1}, claritin: {id: 2}, albuteral: {id: 3}}
 ```
-Here we added `external` to `actionKeys`.  Note that for this simple `external` is assigned to an empty object but in general it can be anythinf including other templates.  You can `run` the templates by `this.run(te, input)` where `te` is the value of `external` as demontrated above.
+Here we added `external` to `actionKeys`.  Note that for this simple example, `external` is assigned to an empty object but in general it can be anything including other templates.  You can `run` the templates by `this.run(te, input)` where `te` is the value of `external` as demontrated above.
 
 ## License
 

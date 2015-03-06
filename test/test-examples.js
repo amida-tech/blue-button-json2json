@@ -48,7 +48,7 @@ describe('examples', function () {
         console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VALUE_1'}}        
     });
 
-    xit('dataKey - 0', function () {
+    it('dataKey - 0', function () {
         var template = {
             dataKey: 'a'
         };
@@ -72,7 +72,7 @@ describe('examples', function () {
         console.log(r2); // {b: 2}
     });
 
-    xit('dataKey - 1', function () {
+    it('dataKey - 1', function () {
         var template = {
             dataKey: 'a.b.c'
         };
@@ -92,7 +92,7 @@ describe('examples', function () {
         console.log(r1); // null
     });
 
-    xit('dataKey - 2', function () {
+    it('dataKey - 2', function () {
         var template = {
             dataKey: 'a.b.c'
         };
@@ -111,7 +111,7 @@ describe('examples', function () {
         console.log(r); // ['value_0', 'value_2']
     });
 
-    xit('dataKey - 3', function () {
+    it('dataKey - 3', function () {
         var template = {
             dataKey: 'a.b.0.c'
         };
@@ -130,7 +130,7 @@ describe('examples', function () {
         console.log(r); // 'value_0'
     });
 
-    xit('dataKey - 4', function () {
+    it('dataKey - 4', function () {
         var template = {
             dataKey: ['a.b', 'a.c']
         };
@@ -158,7 +158,7 @@ describe('examples', function () {
         console.log(r2); // null
     });
 
-    xit('value - 0', function () {
+    it('value - 0', function () {
         var template = {
             value: function (input) {
                 return input.toUpperCase();
@@ -172,7 +172,7 @@ describe('examples', function () {
         console.log(r); // JOE
     });
 
-    xit('value - 1', function () {
+    it('value - 1', function () {
         var template = {
             value: function (input) {
                 return input.toUpperCase();
@@ -183,7 +183,7 @@ describe('examples', function () {
         console.log(r); // JOE
     });
 
-    xit('value - 2', function () {
+    it('value - 2', function () {
         var template = {
             value: 'names are classified',
             dataKey: 'name'
@@ -195,7 +195,7 @@ describe('examples', function () {
         console.log(r); // 'names are classified'
     });
 
-    xit('value - 3', function () {
+    it('value - 3', function () {
         var nestedTemplate = {
             value: function (input) {
                 return input.toUpperCase();
@@ -216,7 +216,7 @@ describe('examples', function () {
         console.log(r); // 'VALUE'
     });
 
-    xit('content - 0', function () {
+    it('content - 0', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -248,7 +248,7 @@ describe('examples', function () {
         console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
     });
 
-    xit('content - 1', function () {
+    it('content - 1', function () {
         var template = {
             content: {
                 'name.last': {
@@ -267,7 +267,7 @@ describe('examples', function () {
         console.log(r); // name: {last: 'DOE', first: 'JOE'}
     });
 
-    xit('constant - 0', function () {
+    it('constant - 0', function () {
         var template = {
             content: {
                 codes: {
@@ -292,7 +292,7 @@ describe('examples', function () {
         console.log(r); // {codes: {Y: 'yellow', R: 'red'}, color: {back: 'Y', fore: 'R'}}
     });
 
-    xit('constant - 1', function () {
+    it('constant - 1', function () {
         var template = {
             constant: 'CONST'
         };
@@ -303,7 +303,7 @@ describe('examples', function () {
         console.log(r); // 'CONST'
     });
 
-    xit('existsWhen', function () {
+    it('existsWhen', function () {
         var bbu = require('blue-button-util');
         var predicate = bbu.predicate;
 
@@ -347,7 +347,7 @@ describe('examples', function () {
         console.log(result2); // null
     });
 
-    xit('dataTransform - 0', function () {
+    it('dataTransform - 0', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -387,7 +387,7 @@ describe('examples', function () {
         console.log(r); // {name: {last: 'DOE', first: 'JOE'}, age: 35}
     });
 
-    xit('default - 0', function () {
+    it('default - 0', function () {
         var template = {
             content: {
                 last: {
@@ -418,7 +418,7 @@ describe('examples', function () {
         console.log(r2); // {last: 'DOE', first: 'unknown'}
     });
 
-    xit('multiple - 0', function () {
+    it('multiple - 0', function () {
         var template = {
             content: {
                 last: {
@@ -438,7 +438,7 @@ describe('examples', function () {
         console.log(r); // {last: 'DOE', given: ['JOE']}
     });
 
-    xit('firstOf - 0', function () {
+    it('firstOf - 0', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -476,7 +476,7 @@ describe('examples', function () {
         console.log(r2); // null
     });
 
-    xit('firstOf - 1', function () {
+    it('firstOf - 1', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -507,7 +507,7 @@ describe('examples', function () {
         console.log(r1); // 'UNKNOWN'
     });
 
-    xit('assign - 0', function () {
+    it('assign - 0', function () {
         var nameTemplate = {
             content: {
                 last: {
@@ -536,7 +536,7 @@ describe('examples', function () {
         console.log(r); // {id: 'JDOE', last: 'DOE', first: 'JOE'}
     });
 
-    xit('override - dataKeyPieceOverride', function () {
+    it('override - dataKeyPieceOverride', function () {
         var peopleDb = {
             '1': {
                 lastName: 'Doe',
