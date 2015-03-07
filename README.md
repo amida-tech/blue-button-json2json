@@ -12,7 +12,7 @@ This library provides a template rules based formalism to describe JSON to JSON 
 
 ## Usage
 
-In its most basic form JSON to JSON transformations are desribed by a template object where `content` objects recursively describe destination keys, `dataKey` objects describe source keys, and `value` functions describe formatting
+In its most basic form JSON to JSON transformations are described by a template object where `content` properties recursively describe destination keys, `dataKey` properties describe source keys, and `value` properties describe formatting
 ```js
 var upper = function(input) {
 	return input ? input.toUpperCase() : null;
@@ -60,7 +60,7 @@ console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VA
 
 ## Standard Template Rules
 
-The following are the list of all keys that have special meaning in the template objects
+The following are the list of all keys that have special meaning in template objects
 - [`dataKey`](#dataKey)
 - [`value`](#value)
 - [`content`](#content)
@@ -141,9 +141,9 @@ var r = j2j.run(template, {
 });
 console.log(r); // ['value_0', 'value_2']
 ```
-Currently only one array on the deep property is supported.  Multiple arrays will result in array of arrays.
+Currently only one array on a deep property is supported.  Multiple arrays will result in array of arrays.
 
-`0` on the path is treated as a special case and selects the first element of the array
+`0` on a deep property is treated as a special case and selects the first element of the array
 ```js
 var template = {
     dataKey: 'a.b.0.c'
@@ -219,7 +219,7 @@ var template = {
 var r = j2j.run(template, 'joe');
 console.log(r); // JOE
 ```
-[blue-button-util]((https://github.com/amida-tech/blue-button-util)) object library contains useful functions that can be used.
+[blue-button-util](https://github.com/amida-tech/blue-button-util) object library contains useful functions that can be used.
 
 This rule can be used to return a primary data type
 ```js
@@ -415,29 +415,29 @@ var template = {
     }
 };
 
-var result0 = j2j.run(template, {
+var r0 = j2j.run(template, {
     a: 'value_a',
     b: 'value_b',
     public: true
 });
-console.log(result0.dest_a); // 'value_a'
-console.log(result0.dest_b); // undefined
+console.log(r0.dest_a); // 'value_a'
+console.log(r0.dest_b); // undefined
 
-var result1 = j2j.run(template, {
+var r1 = j2j.run(template, {
     a: 'value_a',
     b: 'value_b',
     c: 0,
     public: true
 });
-console.log(result1.dest_a); // 'value_a'
-console.log(result1.dest_b); // 'value_b'
+console.log(r1.dest_a); // 'value_a'
+console.log(r1.dest_b); // 'value_b'
 
-var result2 = j2j.run(template, {
+var r2 = j2j.run(template, {
     a: 'value_a',
     b: 'value_b',
     c: 0
 });
-console.log(result2); // null
+console.log(r2); // null
 ```
 
 <a name="dataTransform" />
@@ -522,7 +522,7 @@ console.log(r2); // {last: 'unknown', first: 'JOE'}
 <a name="multiple" />
 #### `multiple` rule
 
-This rule can be change a template evaluted value into a one element array.
+This rule can be used to change a template evaluted value into a one element array.
 ```js
 var template = {
     content: {
@@ -585,7 +585,7 @@ var r2 = j2j.run(template, {
 console.log(r2); // null
 ```
 
-You can include also a primary data type as the last element to simulate a default
+You can also include a primary data type as the last element to simulate a default
 ```js
 var nameTemplate = {
     content: {

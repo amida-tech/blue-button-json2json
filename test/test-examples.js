@@ -369,34 +369,34 @@ describe('examples', function () {
             }
         };
 
-        var result0 = j2j.run(template, {
+        var r0 = j2j.run(template, {
             a: 'value_a',
             b: 'value_b',
             public: true
         });
-        //console.log(result0.dest_a); // 'value_a'
-        //console.log(result0.dest_b); // undefined
-        expect(result0.dest_a).to.equal('value_a');
-        expect(result0.dest_b).to.equal(undefined);
+        //console.log(r0.dest_a); // 'value_a'
+        //console.log(r0.dest_b); // undefined
+        expect(r0.dest_a).to.equal('value_a');
+        expect(r0.dest_b).to.equal(undefined);
 
-        var result1 = j2j.run(template, {
+        var r1 = j2j.run(template, {
             a: 'value_a',
             b: 'value_b',
             c: 0,
             public: true
         });
-        //console.log(result1.dest_a); // 'value_a'
-        //console.log(result1.dest_b); // 'value_b'
-        expect(result1.dest_a).to.equal('value_a');
-        expect(result1.dest_b).to.equal('value_b');
+        //console.log(r1.dest_a); // 'value_a'
+        //console.log(r1.dest_b); // 'value_b'
+        expect(r1.dest_a).to.equal('value_a');
+        expect(r1.dest_b).to.equal('value_b');
 
-        var result2 = j2j.run(template, {
+        var r2 = j2j.run(template, {
             a: 'value_a',
             b: 'value_b',
             c: 0
         });
-        //console.log(result2); // null
-        expect(result2).to.equal(null);
+        //console.log(r2); // null
+        expect(r2).to.equal(null);
     });
 
     it('dataTransform - 0', function () {
