@@ -1,6 +1,6 @@
 {
     "name": "blue-button-json2json",
-    "version": "1.0.0",
+    "version": "1.4.0",
     "description": "Template based JSON to JSON transformer",
     "main": "./index.js",
     "directories": {
@@ -23,7 +23,7 @@
         "node": ">= 0.10.0"
     },
     "dependencies": {
-        "blue-button-util": "git://github.com/amida-tech/blue-button-util.git#v1.4.1",
+        "blue-button-util": "~1.4.1",
         "lodash": "~3.3.1"
     },
     "devDependencies": {
