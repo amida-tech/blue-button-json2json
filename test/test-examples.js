@@ -147,6 +147,26 @@ describe('examples', function () {
     });
 
     it('dataKey - 4', function () {
+        var jp = require('blue-button-util').jsonpath.instance;
+        var template = {
+            dataKey: jp('book[1:].price')
+        };
+
+        var r = j2j.run(template, {
+            book: [{
+                price: 10
+            }, {
+                price: 20
+            }, {
+                price: 30
+            }]
+        });
+
+        //console.log(r); // [20, 30]
+        expect(r).to.deep.equal([20, 30]);
+    });
+
+    it('dataKey - 5', function () {
         var template = {
             dataKey: ['a.b', 'a.c']
         };
@@ -300,6 +320,39 @@ describe('examples', function () {
                 last: 'DOE',
                 first: 'JOE'
             }
+        });
+    });
+
+    it('arrayContent - 0', function () {
+        var nameTemplate = {
+            arrayContent: [{
+                dataKey: 'familyName'
+            }, {
+                dataKey: 'givenName'
+            }]
+        };
+
+        var template = {
+            content: {
+                name: nameTemplate,
+                age: {
+                    value: function (input) {
+                        return 2015 - input;
+                    },
+                    dataKey: 'birthYear'
+                }
+            }
+        };
+
+        var r = j2j.run(template, {
+            familyName: 'DOE',
+            givenName: 'JOE',
+            birthYear: 1980
+        });
+        //console.log(r); // {name: ['DOE', 'JOE'], age: 35}
+        expect(r).to.deep.equal({
+            name: ['DOE', 'JOE'],
+            age: 35
         });
     });
 

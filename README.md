@@ -64,6 +64,7 @@ The following are the list of all keys that have special meaning in template obj
 - [`dataKey`](#dataKey)
 - [`value`](#value)
 - [`content`](#content)
+- [`arrayContent`](#arrayContent)
 - [`constant`](#constant)
 - [`existsWhen`](#existsWhen)
 - [`dataTransform`](#dataTransform)
@@ -161,6 +162,26 @@ var r = j2j.run(template, {
     }
 });
 console.log(r); // 'value_0'
+```
+
+`dataKey` can be set to a function.  In particular JSONPath expressions are particularly useful and available from [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library
+```js
+var jp = require('blue-button-util').jsonpath.instance;
+var template = {
+    dataKey: jp('book[1:].price')
+};
+
+var r = j2j.run(template, {
+    book: [{
+        price: 10
+    }, {
+        price: 20
+    }, {
+        price: 30
+    }]
+});
+
+console.log(r); // [20, 30]
 ```
 
 `dataKey` can be an array.  In that case the first deep property that evaluates to a value that is not `null` is selected
@@ -348,6 +369,39 @@ var r = j2j.run(template, {
     givenName: 'JOE'
 });
 console.log(r); // {name: {last: 'DOE', first: 'JOE'}}
+```
+
+<a name="arrayContent" />
+#### `arrayContent` rule
+
+This rule is similar to `content` but is used to desribe an array instead of an object based on `input`.  The array elements of the `arrayContent` becomes the array elements in the destination object.  Otherwise the array elements of the `arrayContent` work identically to properties of the `content`
+```js
+var nameTemplate = {
+    arrayContent: [{
+        dataKey: 'familyName'
+    }, {
+        dataKey: 'givenName'
+    }]
+};
+
+var template = {
+    content: {
+        name: nameTemplate,
+        age: {
+            value: function (input) {
+                return 2015 - input;
+            },
+            dataKey: 'birthYear'
+        }
+    }
+};
+
+var r = j2j.run(template, {
+    familyName: 'DOE',
+    givenName: 'JOE',
+    birthYear: 1980
+});
+console.log(r); // {name: ['DOE', 'JOE'], age: 35}
 ```
 
 <a name="constant" />
@@ -670,7 +724,7 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `dataKeyToInput`
 - `dataKeyArrayToInput`
 
-`run` is the entry point. `content`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
+`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
 
 ### Overrides To Existing Keys
 

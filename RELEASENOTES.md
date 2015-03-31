@@ -1,3 +1,8 @@
+# v1.5.0 - TBD
+
+- `dataKey` now accepts functions.
+- `arrayContent` key is added.
+
 # v1.4.0 - March 8, 2015
 
 This is the initial release of blue-button-json2json library.
