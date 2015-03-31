@@ -19,16 +19,16 @@ exports.inputs = [];
 exports.expecteds = [];
 
 exports.inputs[0] = {
-	book: [{
-		price: 20
-	}, {
-		price: 25
-	}, {
-		price: 30
-	}]
+    book: [{
+        price: 20
+    }, {
+        price: 25
+    }, {
+        price: 30
+    }]
 };
 
 exports.expecteds[0] = {
-	price: 20,
-	prices: [25, 30]
+    price: 20,
+    prices: [25, 30]
 };
