@@ -184,7 +184,7 @@ var r = j2j.run(template, {
 
 console.log(r); // [20, 30]
 ```
-A second [`dataKeyFnOptions`](#dataKeyFnOptions) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#dataKeyFnOptions).  This is in paricular useful to further customize JSONPath function.
+A second [`dataKeyFnOptions`](#dataKeyFnOptions) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#dataKeyFnOptions).  This is useful to further customize JSONPath function.
 
 `dataKey` can be an array.  In that case the first deep property that evaluates to a value that is not `null` is selected
 ```js
@@ -829,7 +829,7 @@ console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
 <a name="dataKeyFnOptions" />
 #### `dataKeyFnOptions` Override
 
-When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty objects.  You can specify any property to be used by the `dataKey` function.  In particular [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library allows functions in JSONPath expressions which can be specified with this key
+When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library allows functions in JSONPath expressions which can be specified with this key
 
 ```js
 var override = {
