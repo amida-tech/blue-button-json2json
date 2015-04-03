@@ -70,6 +70,7 @@ The following are the list of all keys that have special meaning in template obj
 - [`dataTransform`](#dataTransform)
 - [`default`](#default)
 - [`multiple`](#multiple)
+- [`single`](#single)
 - [`firstOf`](#firstOf)
 - [`assign`](#assign)
 
@@ -164,7 +165,7 @@ var r = j2j.run(template, {
 console.log(r); // 'value_0'
 ```
 
-`dataKey` can be set to a function.  In particular JSONPath expressions are particularly useful and available from [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library
+`dataKey` can be a function.  In particular JSONPath expressions are particularly useful and available from [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library
 ```js
 var jp = require('blue-button-util').jsonpath.instance;
 var template = {
@@ -183,6 +184,7 @@ var r = j2j.run(template, {
 
 console.log(r); // [20, 30]
 ```
+A second [`dataKeyFnOptions`](#dataKeyFnOptions) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#dataKeyFnOptions).  This is useful to further customize JSONPath function.
 
 `dataKey` can be an array.  In that case the first deep property that evaluates to a value that is not `null` is selected
 ```js
@@ -576,7 +578,7 @@ console.log(r2); // {last: 'unknown', first: 'JOE'}
 <a name="multiple" />
 #### `multiple` rule
 
-This rule can be used to change a template evaluted value into a one element array.
+This rule can be used to change a template evaluted value into a one element array
 ```js
 var template = {
     content: {
@@ -595,6 +597,32 @@ var r = j2j.run(template, {
     givenName: 'JOE'
 });
 console.log(r); // {last: 'DOE', given: ['JOE']}
+```
+<a name="single" />
+#### `single` rule
+
+This rule can be used to select the first value of a template evaluated array.  This is especially useful for conditional JSONPath expression
+```js
+var jp = require('blue-button-util').jsonpath.instance;
+var template = {
+    dataKey: jp('book[?(@.id==="AF20")].price'),
+    single: true
+};
+
+var r = j2j.run(template, {
+    book: [{
+        id: "AA10",
+        price: 10
+    }, {
+        id: "AF20",
+        price: 20
+    }, {
+        id: "AB15",
+        price: 30
+    }]
+});
+
+console.log(r); // 20
 ```
 
 <a name="firstOf" />
@@ -723,13 +751,17 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `dataKeyToInputForArray`
 - `dataKeyToInput`
 - `dataKeyArrayToInput`
+- `dataKeyFnOptions
 
 `run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
 
 ### Overrides To Existing Keys
 
-Although in principle any of the implementation keys can be overridden, only `dataKeyPieceOverride` is designed 
-as such.  You can override this key to further transform `input` based on `dataKey` piece
+Although in principle any of the implementation keys can be overridden, only `dataKeyPieceOverride` and `dataKeyFnOptions` are designed as such.
+
+#### `dataKeyPieceOverride` Override
+
+You can override `dataKeyPieceOverride` to further transform `input` based on `dataKey` piece
 ```js
 var peopleDb = {
     '1': {
@@ -792,6 +824,41 @@ console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe'
 
 var r1 = j2j_od.run(template, peopleDb[3]);
 console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
+```
+
+<a name="dataKeyFnOptions" />
+#### `dataKeyFnOptions` Override
+
+When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library allows functions in JSONPath expressions which can be specified with this key
+
+```js
+var override = {
+    dataKeyFnOptions: {
+        round: function(obj) {
+            return Math.round(obj);
+        }
+    }
+};
+
+var j2j_dkfno = bbj2j.instance(override, override);
+
+
+var jp = require('blue-button-util').jsonpath.instance;
+var template = {
+    dataKey: jp('book[:].price.round()')
+};
+
+var r = j2j_dkfno.run(template, {
+    book: [{
+        price: 10.3
+    }, {
+        price: 22.2
+    }, {
+        price: 31.9
+    }]
+});
+
+console.log(r); // [10, 22, 32]
 ```
 
 ### Additional Action Keys

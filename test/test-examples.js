@@ -45,7 +45,7 @@ describe('examples', function () {
         };
 
         var r = j2j.run(template, input);
-        //console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VALUE_1'}}        
+        //console.log(r); // {dest_a: 'value_2', dest_b: {dest_b0: 'VALUE_0', dest_b1: 'VALUE_1'}}
         expect(r).to.deep.equal({
             dest_a: 'value_2',
             dest_b: {
@@ -149,7 +149,7 @@ describe('examples', function () {
     it('dataKey - 4', function () {
         var jp = require('blue-button-util').jsonpath.instance;
         var template = {
-            dataKey: jp('book[1:].price')
+            dataKey: jp('$.book[1:].price')
         };
 
         var r = j2j.run(template, {
@@ -566,6 +566,30 @@ describe('examples', function () {
         });
     });
 
+    it('single - 0', function () {
+        var jp = require('blue-button-util').jsonpath.instance;
+        var template = {
+            dataKey: jp('$.book[?(@.id==="AF20")].price'),
+            single: true
+        };
+
+        var r = j2j.run(template, {
+            book: [{
+                id: "AA10",
+                price: 10
+            }, {
+                id: "AF20",
+                price: 20
+            }, {
+                id: "AB15",
+                price: 30
+            }]
+        });
+
+        //console.log(r); // 20
+        expect(r).to.equal(20);
+    });
+
     it('firstOf - 0', function () {
         var nameTemplate = {
             content: {
@@ -758,6 +782,36 @@ describe('examples', function () {
                 first: 'Dave'
             }
         });
+    });
+
+    it('override - dataKeyFnOptions', function () {
+        var override = {
+            dataKeyFnOptions: {
+                round: function (obj) {
+                    return Math.round(obj);
+                }
+            }
+        };
+
+        var j2j_dkfno = bbj2j.instance(override, override);
+
+        var jp = require('blue-button-util').jsonpath.instance;
+        var template = {
+            dataKey: jp('book[:].price.round()')
+        };
+
+        var r = j2j_dkfno.run(template, {
+            book: [{
+                price: 10.3
+            }, {
+                price: 22.2
+            }, {
+                price: 31.9
+            }]
+        });
+
+        //console.log(r); // [10, 22, 32]
+        expect(r).to.deep.equal([10, 22, 32]);
     });
 
     it('override - actionKey', function () {
