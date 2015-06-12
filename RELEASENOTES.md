@@ -1,4 +1,4 @@
-# v1.5.0 - TBD
+# v1.5.0 - June 12, 2015
 
 - `dataKey` now accepts functions.  Primarily designed for JSONPath expression.
 - `arrayContent` key is added.
