@@ -242,7 +242,6 @@ var template = {
 var r = j2j.run(template, 'joe');
 console.log(r); // JOE
 ```
-[blue-button-util](https://github.com/amida-tech/blue-button-util) object library contains useful functions that can be used.
 
 This rule can be used to return a primary data type
 ```js
@@ -450,11 +449,10 @@ console.log(r); // 'CONST'
 <a name="existsWhen" />
 #### `existsWhen` rule
 
-This rule determines if a property or value exists.  It must be a predicate.  A set of most common predicates are available from [blue-button-util](https://github.com/amida-tech/blue-button-util) predicate library.  This rule is evaluated before any other rule on the same level.
+This rule determines if a property or value exists.  It must be a predicate.  This rule is evaluated before any other rule on the same level.
 
 ```js
-var bbu = require('blue-button-util');
-var predicate = bbu.predicate;
+var _ = require('lodash');
 
 var template = {
     content: {
@@ -463,7 +461,7 @@ var template = {
         },
         dest_b: {
             dataKey: 'b',
-            existsWhen: predicate.hasProperty('c')
+            existsWhen: _.partialRight(_.has, 'c')
         },
     },
     existsWhen: function (input) {
@@ -829,7 +827,7 @@ console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
 <a name="dataKeyFnOptions" />
 #### `dataKeyFnOptions` Override
 
-When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library allows functions in JSONPath expressions which can be specified with this key
+When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [jsonave](https://github.com/amida-tech/jsonave) library allows functions in JSONPath expressions which can be specified with this key
 
 ```js
 var override = {

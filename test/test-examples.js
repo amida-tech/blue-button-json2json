@@ -404,8 +404,7 @@ describe('examples', function () {
     });
 
     it('existsWhen', function () {
-        var bbu = require('blue-button-util');
-        var predicate = bbu.predicate;
+        var _ = require('lodash');
 
         var template = {
             content: {
@@ -414,7 +413,7 @@ describe('examples', function () {
                 },
                 dest_b: {
                     dataKey: 'b',
-                    existsWhen: predicate.hasProperty('c')
+                    existsWhen: _.partialRight(_.has, 'c')
                 },
             },
             existsWhen: function (input) {
