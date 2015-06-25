@@ -705,9 +705,9 @@ describe('examples', function () {
         });
     });
 
-    it('override - dataKeyFnOptions', function () {
+    it('override - context', function () {
         var override = {
-            dataKeyFnOptions: {
+            context: {
                 round: function (obj) {
                     return Math.round(obj);
                 }

@@ -186,7 +186,7 @@ var r = j2j.run(template, {
 
 console.log(r); // [20, 30]
 ```
-A second [`dataKeyFnOptions`](#dataKeyFnOptions) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#dataKeyFnOptions).  This is useful to further customize JSONPath function.
+A second [`context`](#context) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#context).  This is useful to further customize JSONPath function.
 
 `dataKey` can be an array.  In that case the first deep property that evaluates to a value that is not `null` is selected
 ```js
@@ -748,22 +748,22 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `actionKeys`
 - `dataKeyToInput`
 - `dataKeyArrayToInput`
-- `dataKeyFnOptions
+- `context
 
-`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyFnOptions`.  However you can add additional functionality by adding new data and action keys.
+`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `context`.  However you can add additional functionality by adding new data and action keys.
 
 ### Overrides To Existing Keys
 
-Although in principle any of the implementation keys can be overridden, only `dataKeyFnOptions` is designed as such.
+Although in principle any of the implementation keys can be overridden, only `context` is designed as such.
 
-<a name="dataKeyFnOptions" />
-#### `dataKeyFnOptions` Override
+<a name="context" />
+#### `context` Override
 
-When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [jsonave](https://github.com/amida-tech/jsonave) library allows functions in JSONPath expressions which can be specified with this key
+When `dataKey` is a function this parameter is passed as the second parameter.  By default `context` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [jsonave](https://github.com/amida-tech/jsonave) library allows functions in JSONPath expressions which can be specified with this key
 
 ```js
 var override = {
-    dataKeyFnOptions: {
+    context: {
         round: function(obj) {
             return Math.round(obj);
         }
