@@ -751,78 +751,11 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `dataKeyArrayToInput`
 - `dataKeyFnOptions
 
-`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
+`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyFnOptions`.  However you can add additional functionality by adding new data and action keys.
 
 ### Overrides To Existing Keys
 
-Although in principle any of the implementation keys can be overridden, only `dataKeyPieceOverride` and `dataKeyFnOptions` are designed as such.
-
-#### `dataKeyPieceOverride` Override
-
-You can override `dataKeyPieceOverride` to further transform `input` based on `dataKey` piece
-```js
-var peopleDb = {
-    '1': {
-        lastName: 'Doe',
-        firstName: 'Joe',
-        spouseId: 2
-    },
-    '2': {
-        lastName: 'Doe',
-        firstName: 'Jane',
-        spouseId: 1
-    },
-    '3': {
-        lastName: 'Eod',
-        firstName: 'Dave'
-    }
-};
-
-var override = {
-    peopleDb: peopleDb,
-    dataKeyPieceOverride: function (input, dataKeyPiece) {
-        if (input && (dataKeyPiece === 'spouseId')) {
-            var person = this.peopleDb[input];
-            if (person) {
-                return person;
-            } else {
-                return null;
-            }
-        } else {
-            return input;
-        }
-    }
-};
-
-var j2j_od = bbj2j.instance(override);
-
-var nameTemplate = {
-    content: {
-        last: {
-            dataKey: 'lastName'
-        },
-        first: {
-            dataKey: 'firstName'
-        }
-    }
-};
-
-var template = {
-    content: {
-        name: nameTemplate,
-        spouseName: {
-            value: nameTemplate,
-            dataKey: 'spouseId'
-        }
-    }
-};
-
-var r0 = j2j_od.run(template, peopleDb[1]);
-console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe', first: 'Jane'}}
-
-var r1 = j2j_od.run(template, peopleDb[3]);
-console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
-```
+Although in principle any of the implementation keys can be overridden, only `dataKeyFnOptions` is designed as such.
 
 <a name="dataKeyFnOptions" />
 #### `dataKeyFnOptions` Override
