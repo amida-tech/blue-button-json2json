@@ -1,16 +1,14 @@
 "use strict";
 
-var bbu = require('blue-button-util');
-
-var jp = bbu.jsonpath;
+var jsonave = require('jsonave');
 
 exports.template = {
     content: {
         price: {
-            dataKey: jp.instance('book[0].price')
+            dataKey: jsonave.instance('book[0].price')
         },
         prices: {
-            dataKey: jp.instance('book[1:].price')
+            dataKey: jsonave.instance('book[1:].price')
         }
     }
 };

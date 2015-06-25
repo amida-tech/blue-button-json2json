@@ -124,10 +124,12 @@ var r1 = j2j.run(template, {
 console.log(r1); // null
 ```
 
-If the property or any of the properties on the deep property is an array `dataKey` yields an array as well
+If the property or any of the properties on the deep property is an array `dataKey` you can use jsonave
 ```js
+var jsonave = require('jsonave').instance;
+
 var template = {
-    dataKey: 'a.b.c'
+    dataKey: jsonave('a.b[*].c')
 };
 
 var r = j2j.run(template, {
@@ -165,11 +167,11 @@ var r = j2j.run(template, {
 console.log(r); // 'value_0'
 ```
 
-`dataKey` can be a function.  In particular JSONPath expressions are particularly useful and available from [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library
+`dataKey` can be a function.  In particular JSONPath expressions are particularly useful and available from [jsonave](https://github.com/amida-tech/jsonave)
 ```js
-var jp = require('blue-button-util').jsonpath.instance;
+var jsonave = require('jsonave').instance;
 var template = {
-    dataKey: jp('book[1:].price')
+    dataKey: jsonave('book[1:].price')
 };
 
 var r = j2j.run(template, {
@@ -184,7 +186,7 @@ var r = j2j.run(template, {
 
 console.log(r); // [20, 30]
 ```
-A second [`dataKeyFnOptions`](#dataKeyFnOptions) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#dataKeyFnOptions).  This is useful to further customize JSONPath function.
+A second [`context`](#context) parameter is also passed to `dataKey` functions.  By default this parameter is an empty object but that can be [overridden](#context).  This is useful to further customize JSONPath function.
 
 `dataKey` can be an array.  In that case the first deep property that evaluates to a value that is not `null` is selected
 ```js
@@ -242,7 +244,6 @@ var template = {
 var r = j2j.run(template, 'joe');
 console.log(r); // JOE
 ```
-[blue-button-util](https://github.com/amida-tech/blue-button-util) object library contains useful functions that can be used.
 
 This rule can be used to return a primary data type
 ```js
@@ -450,11 +451,10 @@ console.log(r); // 'CONST'
 <a name="existsWhen" />
 #### `existsWhen` rule
 
-This rule determines if a property or value exists.  It must be a predicate.  A set of most common predicates are available from [blue-button-util](https://github.com/amida-tech/blue-button-util) predicate library.  This rule is evaluated before any other rule on the same level.
+This rule determines if a property or value exists.  It must be a predicate.  This rule is evaluated before any other rule on the same level.
 
 ```js
-var bbu = require('blue-button-util');
-var predicate = bbu.predicate;
+var _ = require('lodash');
 
 var template = {
     content: {
@@ -463,7 +463,7 @@ var template = {
         },
         dest_b: {
             dataKey: 'b',
-            existsWhen: predicate.hasProperty('c')
+            existsWhen: _.partialRight(_.has, 'c')
         },
     },
     existsWhen: function (input) {
@@ -603,9 +603,9 @@ console.log(r); // {last: 'DOE', given: ['JOE']}
 
 This rule can be used to select the first value of a template evaluated array.  This is especially useful for conditional JSONPath expression
 ```js
-var jp = require('blue-button-util').jsonpath.instance;
+var jsonave = require('jsonave').instance;
 var template = {
-    dataKey: jp('book[?(@.id==="AF20")].price'),
+    dataKey: jsonave('book[?(@.id==="AF20")].price'),
     single: true
 };
 
@@ -746,94 +746,24 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `evaluateDataKey`
 - `evaluateValue`
 - `actionKeys`
-- `dataKeyPieceOverride`
-- `dataKeyArrayOverride`
-- `dataKeyToInputForArray`
 - `dataKeyToInput`
 - `dataKeyArrayToInput`
-- `dataKeyFnOptions
+- `context
 
-`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `dataKeyPieceOverride`.  However you can add additional functionality by adding new data and action keys.
+`run` is the entry point. `content`, `arrayContent`, `value`, `constant`, `firstOf` and `assign` are called action keys and listed in `actionKeys` array.  Only one of `actionKeys` can appear on a template on the same level.  None of these keys are designed to be overridden except `context`.  However you can add additional functionality by adding new data and action keys.
 
 ### Overrides To Existing Keys
 
-Although in principle any of the implementation keys can be overridden, only `dataKeyPieceOverride` and `dataKeyFnOptions` are designed as such.
+Although in principle any of the implementation keys can be overridden, only `context` is designed as such.
 
-#### `dataKeyPieceOverride` Override
+<a name="context" />
+#### `context` Override
 
-You can override `dataKeyPieceOverride` to further transform `input` based on `dataKey` piece
-```js
-var peopleDb = {
-    '1': {
-        lastName: 'Doe',
-        firstName: 'Joe',
-        spouseId: 2
-    },
-    '2': {
-        lastName: 'Doe',
-        firstName: 'Jane',
-        spouseId: 1
-    },
-    '3': {
-        lastName: 'Eod',
-        firstName: 'Dave'
-    }
-};
-
-var override = {
-    peopleDb: peopleDb,
-    dataKeyPieceOverride: function (input, dataKeyPiece) {
-        if (input && (dataKeyPiece === 'spouseId')) {
-            var person = this.peopleDb[input];
-            if (person) {
-                return person;
-            } else {
-                return null;
-            }
-        } else {
-            return input;
-        }
-    }
-};
-
-var j2j_od = bbj2j.instance(override);
-
-var nameTemplate = {
-    content: {
-        last: {
-            dataKey: 'lastName'
-        },
-        first: {
-            dataKey: 'firstName'
-        }
-    }
-};
-
-var template = {
-    content: {
-        name: nameTemplate,
-        spouseName: {
-            value: nameTemplate,
-            dataKey: 'spouseId'
-        }
-    }
-};
-
-var r0 = j2j_od.run(template, peopleDb[1]);
-console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe', first: 'Jane'}}
-
-var r1 = j2j_od.run(template, peopleDb[3]);
-console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
-```
-
-<a name="dataKeyFnOptions" />
-#### `dataKeyFnOptions` Override
-
-When `dataKey` is a function this parameter is passed as the second parameter.  By default `dataKeyFnOptions` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library allows functions in JSONPath expressions which can be specified with this key
+When `dataKey` is a function this parameter is passed as the second parameter.  By default `context` is an empty object.  You can specify any property to be used by the `dataKey` function.  In particular [jsonave](https://github.com/amida-tech/jsonave) library allows functions in JSONPath expressions which can be specified with this key
 
 ```js
 var override = {
-    dataKeyFnOptions: {
+    context: {
         round: function(obj) {
             return Math.round(obj);
         }
@@ -843,9 +773,9 @@ var override = {
 var j2j_dkfno = bbj2j.instance(override, override);
 
 
-var jp = require('blue-button-util').jsonpath.instance;
+var jsonave = require('jsonave').instance;
 var template = {
-    dataKey: jp('book[:].price.round()')
+    dataKey: jsonave('book[:].price.round()')
 };
 
 var r = j2j_dkfno.run(template, {

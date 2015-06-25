@@ -107,8 +107,10 @@ describe('examples', function () {
     });
 
     it('dataKey - 2', function () {
+        var jsonave = require('jsonave').instance;
+
         var template = {
-            dataKey: 'a.b.c'
+            dataKey: jsonave('a.b[*].c')
         };
 
         var r = j2j.run(template, {
@@ -147,9 +149,9 @@ describe('examples', function () {
     });
 
     it('dataKey - 4', function () {
-        var jp = require('blue-button-util').jsonpath.instance;
+        var jsonave = require('jsonave').instance;
         var template = {
-            dataKey: jp('$.book[1:].price')
+            dataKey: jsonave('$.book[1:].price')
         };
 
         var r = j2j.run(template, {
@@ -404,8 +406,7 @@ describe('examples', function () {
     });
 
     it('existsWhen', function () {
-        var bbu = require('blue-button-util');
-        var predicate = bbu.predicate;
+        var _ = require('lodash');
 
         var template = {
             content: {
@@ -414,7 +415,7 @@ describe('examples', function () {
                 },
                 dest_b: {
                     dataKey: 'b',
-                    existsWhen: predicate.hasProperty('c')
+                    existsWhen: _.partialRight(_.has, 'c')
                 },
             },
             existsWhen: function (input) {
@@ -567,9 +568,9 @@ describe('examples', function () {
     });
 
     it('single - 0', function () {
-        var jp = require('blue-button-util').jsonpath.instance;
+        var jsonave = require('jsonave').instance;
         var template = {
-            dataKey: jp('$.book[?(@.id==="AF20")].price'),
+            dataKey: jsonave('$.book[?(@.id==="AF20")].price'),
             single: true
         };
 
@@ -704,89 +705,9 @@ describe('examples', function () {
         });
     });
 
-    it('override - dataKeyPieceOverride', function () {
-        var peopleDb = {
-            '1': {
-                lastName: 'Doe',
-                firstName: 'Joe',
-                spouseId: 2
-            },
-            '2': {
-                lastName: 'Doe',
-                firstName: 'Jane',
-                spouseId: 1
-            },
-            '3': {
-                lastName: 'Eod',
-                firstName: 'Dave'
-            }
-        };
-
+    it('override - context', function () {
         var override = {
-            peopleDb: peopleDb,
-            dataKeyPieceOverride: function (input, dataKeyPiece) {
-                if (input && (dataKeyPiece === 'spouseId')) {
-                    var person = this.peopleDb[input];
-                    if (person) {
-                        return person;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return input;
-                }
-            }
-        };
-
-        var j2j_od = bbj2j.instance(override);
-
-        var nameTemplate = {
-            content: {
-                last: {
-                    dataKey: 'lastName'
-                },
-                first: {
-                    dataKey: 'firstName'
-                }
-            }
-        };
-
-        var template = {
-            content: {
-                name: nameTemplate,
-                spouseName: {
-                    value: nameTemplate,
-                    dataKey: 'spouseId'
-                }
-            }
-        };
-
-        var r0 = j2j_od.run(template, peopleDb[1]);
-        //console.log(r0); // {name: {last: 'Doe', first: 'Joe'}, spouseName: {last: 'Doe', first: 'Jane'}}
-        expect(r0).to.deep.equal({
-            name: {
-                last: 'Doe',
-                first: 'Joe'
-            },
-            spouseName: {
-                last: 'Doe',
-                first: 'Jane'
-            }
-        });
-
-        var r1 = j2j_od.run(template, peopleDb[3]);
-        //console.log(r1); // {name: {last: 'Eod', first: 'Dave'}}
-        expect(r1).to.deep.equal({
-            name: {
-                last: 'Eod',
-                first: 'Dave'
-            }
-        });
-    });
-
-    it('override - dataKeyFnOptions', function () {
-        var override = {
-            dataKeyFnOptions: {
+            context: {
                 round: function (obj) {
                     return Math.round(obj);
                 }
@@ -795,9 +716,9 @@ describe('examples', function () {
 
         var j2j_dkfno = bbj2j.instance(override, override);
 
-        var jp = require('blue-button-util').jsonpath.instance;
+        var jsonave = require('jsonave').instance;
         var template = {
-            dataKey: jp('book[:].price.round()')
+            dataKey: jsonave('book[:].price.round()')
         };
 
         var r = j2j_dkfno.run(template, {
