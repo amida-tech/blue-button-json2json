@@ -165,11 +165,11 @@ var r = j2j.run(template, {
 console.log(r); // 'value_0'
 ```
 
-`dataKey` can be a function.  In particular JSONPath expressions are particularly useful and available from [blue-button-util](https://github.com/amida-tech/blue-button-util) `jsonpath` library
+`dataKey` can be a function.  In particular JSONPath expressions are particularly useful and available from [jsonave](https://github.com/amida-tech/jsonave)
 ```js
-var jp = require('blue-button-util').jsonpath.instance;
+var jsonave = require('jsonave').instance;
 var template = {
-    dataKey: jp('book[1:].price')
+    dataKey: jsonave('book[1:].price')
 };
 
 var r = j2j.run(template, {
@@ -603,9 +603,9 @@ console.log(r); // {last: 'DOE', given: ['JOE']}
 
 This rule can be used to select the first value of a template evaluated array.  This is especially useful for conditional JSONPath expression
 ```js
-var jp = require('blue-button-util').jsonpath.instance;
+var jsonave = require('jsonave').instance;
 var template = {
-    dataKey: jp('book[?(@.id==="AF20")].price'),
+    dataKey: jsonave('book[?(@.id==="AF20")].price'),
     single: true
 };
 
@@ -843,9 +843,9 @@ var override = {
 var j2j_dkfno = bbj2j.instance(override, override);
 
 
-var jp = require('blue-button-util').jsonpath.instance;
+var jsonave = require('jsonave').instance;
 var template = {
-    dataKey: jp('book[:].price.round()')
+    dataKey: jsonave('book[:].price.round()')
 };
 
 var r = j2j_dkfno.run(template, {

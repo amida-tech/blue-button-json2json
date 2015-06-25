@@ -147,9 +147,9 @@ describe('examples', function () {
     });
 
     it('dataKey - 4', function () {
-        var jp = require('blue-button-util').jsonpath.instance;
+        var jsonave = require('jsonave').instance;
         var template = {
-            dataKey: jp('$.book[1:].price')
+            dataKey: jsonave('$.book[1:].price')
         };
 
         var r = j2j.run(template, {
@@ -567,9 +567,9 @@ describe('examples', function () {
     });
 
     it('single - 0', function () {
-        var jp = require('blue-button-util').jsonpath.instance;
+        var jsonave = require('jsonave').instance;
         var template = {
-            dataKey: jp('$.book[?(@.id==="AF20")].price'),
+            dataKey: jsonave('$.book[?(@.id==="AF20")].price'),
             single: true
         };
 
@@ -795,9 +795,9 @@ describe('examples', function () {
 
         var j2j_dkfno = bbj2j.instance(override, override);
 
-        var jp = require('blue-button-util').jsonpath.instance;
+        var jsonave = require('jsonave').instance;
         var template = {
-            dataKey: jp('book[:].price.round()')
+            dataKey: jsonave('book[:].price.round()')
         };
 
         var r = j2j_dkfno.run(template, {
