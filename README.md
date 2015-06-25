@@ -67,6 +67,7 @@ The following are the list of all keys that have special meaning in template obj
 - [`arrayContent`](#arrayContent)
 - [`constant`](#constant)
 - [`existsWhen`](#existsWhen)
+- [`existsUnless`](#existsUnless)
 - [`dataTransform`](#dataTransform)
 - [`default`](#default)
 - [`multiple`](#multiple)
@@ -451,7 +452,7 @@ console.log(r); // 'CONST'
 <a name="existsWhen" />
 #### `existsWhen` rule
 
-This rule determines if a property or value exists.  It must be a predicate.  This rule is evaluated before any other rule on the same level.
+This rule must be a predicate or array of predicates. If the predicate evaluates to false, the template is ignored.  This rule is evaluated before any other rule on the same level.
 
 ```js
 var _ = require('lodash');
@@ -492,6 +493,136 @@ var r2 = j2j.run(template, {
     a: 'value_a',
     b: 'value_b',
     c: 0
+});
+console.log(r2); // null
+```
+
+If this rule is an array, each predicate in the array must evaluate to true
+
+```js
+var _ = require('lodash');
+
+var template = {
+    content: {
+        dest_a: {
+            dataKey: 'a'
+        },
+        dest_b: {
+            dataKey: 'b'
+        },
+    },
+    existsWhen: [_.partialRight(_.has, 'c'), _.partialRight(_.has, 'd')]
+};
+
+var r0 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    c: 'available'
+});
+console.log(r0); // null
+
+var r1 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    d: 'available'
+});
+console.log(r1); // null
+
+var r2 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    c: 'available',
+    d: 'available'
+});
+console.log(r2.dest_a); // 'value_a'
+console.log(r2.dest_b); // 'value_b'
+```
+
+<a name="existsUnless" />
+#### `existsUnless` rule
+
+ This rule must be a predicate or array of predicates. If the predicate evaluates to true, the template is ignored.  This rule is evaluated before any other rule but existsWhen.
+
+```js
+var _ = require('lodash');
+
+var template = {
+    content: {
+        dest_a: {
+            dataKey: 'a'
+        },
+        dest_b: {
+            dataKey: 'b',
+            existsUnless: _.partialRight(_.has, 'c')
+        },
+    },
+    existsUnless: function (input) {
+        return input && input.private;
+    }
+};
+
+var r0 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    c: 0,
+    private: false
+});
+console.log(r0.dest_a); // 'value_a'
+console.log(r0.dest_b); // undefined
+
+var r1 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b'
+});
+console.log(r1.dest_a); // 'value_a'
+console.log(r1.dest_b); // 'value_b'
+
+var r2 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    private: true
+});
+console.log(r2); // null
+```
+
+If this rule is an array, each predicate in the array must evaluate to true for the template to evaluate to `null`.
+
+```js
+var _ = require('lodash');
+
+var template = {
+    content: {
+        dest_a: {
+            dataKey: 'a'
+        },
+        dest_b: {
+            dataKey: 'b'
+        },
+    },
+    existsUnless: [_.partialRight(_.has, 'c'), _.partialRight(_.has, 'd')]
+};
+
+var r0 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    c: 'available'
+});
+console.log(r0.dest_a); // 'value_a'
+console.log(r0.dest_b); // 'value_b'
+
+var r1 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    d: 'available'
+});
+console.log(r1.dest_a); // 'value_a'
+console.log(r1.dest_b); // 'value_b'
+
+var r2 = j2j.run(template, {
+    a: 'value_a',
+    b: 'value_b',
+    c: 'available',
+    d: 'available'
 });
 console.log(r2); // null
 ```
