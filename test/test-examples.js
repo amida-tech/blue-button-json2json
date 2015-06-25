@@ -107,8 +107,10 @@ describe('examples', function () {
     });
 
     it('dataKey - 2', function () {
+        var jsonave = require('jsonave').instance;
+
         var template = {
-            dataKey: 'a.b.c'
+            dataKey: jsonave('a.b[*].c')
         };
 
         var r = j2j.run(template, {

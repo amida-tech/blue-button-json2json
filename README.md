@@ -124,10 +124,12 @@ var r1 = j2j.run(template, {
 console.log(r1); // null
 ```
 
-If the property or any of the properties on the deep property is an array `dataKey` yields an array as well
+If the property or any of the properties on the deep property is an array `dataKey` you can use jsonave
 ```js
+var jsonave = require('jsonave').instance;
+
 var template = {
-    dataKey: 'a.b.c'
+    dataKey: jsonave('a.b[*].c')
 };
 
 var r = j2j.run(template, {
@@ -744,9 +746,6 @@ Each engine instance `j2j` contains all the implementation details as functions 
 - `evaluateDataKey`
 - `evaluateValue`
 - `actionKeys`
-- `dataKeyPieceOverride`
-- `dataKeyArrayOverride`
-- `dataKeyToInputForArray`
 - `dataKeyToInput`
 - `dataKeyArrayToInput`
 - `dataKeyFnOptions

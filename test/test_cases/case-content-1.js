@@ -1,24 +1,26 @@
 "use strict";
 
+var jsonave = require('jsonave');
+
 var nestedTemplate = {
     content: {
         name: {
             dataKey: 'detail.name'
         },
         subjects: {
-            dataKey: 'detail.notes.subject'
+            dataKey: jsonave.instance('detail.notes[*].subject')
         },
         grades: {
-            dataKey: 'detail.notes.grade'
+            dataKey: jsonave.instance('detail.notes[*].grade')
         },
         firstSubject: {
-            dataKey: 'detail.notes.0.subject'
+            dataKey: 'detail.notes[0].subject'
         },
         first: {
             value: function (input) {
                 return input.subject + ': ' + input.grade;
             },
-            dataKey: 'detail.notes.0'
+            dataKey: 'detail.notes[0]'
         },
         total: {
             dataKey: 'detail.notes',
