@@ -496,6 +496,98 @@ describe('examples', function () {
         expect(r2.dest_b).to.equal('value_b');
     });
 
+    it('existsUnless - 0', function () {
+        var _ = require('lodash');
+
+        var template = {
+            content: {
+                dest_a: {
+                    dataKey: 'a'
+                },
+                dest_b: {
+                    dataKey: 'b',
+                    existsUnless: _.partialRight(_.has, 'c')
+                },
+            },
+            existsUnless: function (input) {
+                return input && input.private;
+            }
+        };
+
+        var r0 = j2j.run(template, {
+            a: 'value_a',
+            b: 'value_b',
+            c: 0,
+            private: false
+        });
+        //console.log(r0.dest_a); // 'value_a'
+        //console.log(r0.dest_b); // undefined
+        expect(r0.dest_a).to.equal('value_a');
+        expect(r0.dest_b).to.equal(undefined);
+
+        var r1 = j2j.run(template, {
+            a: 'value_a',
+            b: 'value_b'
+        });
+        //console.log(r1.dest_a); // 'value_a'
+        //console.log(r1.dest_b); // 'value_b'
+        expect(r1.dest_a).to.equal('value_a');
+        expect(r1.dest_b).to.equal('value_b');
+
+        var r2 = j2j.run(template, {
+            a: 'value_a',
+            b: 'value_b',
+            private: true
+        });
+        //console.log(r2); // null
+        expect(r2).to.equal(null);
+    });
+
+    it('existsUnless - 1', function () {
+        var _ = require('lodash');
+
+        var template = {
+            content: {
+                dest_a: {
+                    dataKey: 'a'
+                },
+                dest_b: {
+                    dataKey: 'b'
+                },
+            },
+            existsUnless: [_.partialRight(_.has, 'c'), _.partialRight(_.has, 'd')]
+        };
+
+        var r0 = j2j.run(template, {
+            a: 'value_a',
+            b: 'value_b',
+            c: 'available'
+        });
+        //console.log(r0.dest_a); // 'value_a'
+        //console.log(r0.dest_b); // 'value_b'
+        expect(r0.dest_a).to.equal('value_a');
+        expect(r0.dest_b).to.equal('value_b');
+
+        var r1 = j2j.run(template, {
+            a: 'value_a',
+            b: 'value_b',
+            d: 'available'
+        });
+        //console.log(r1.dest_a); // 'value_a'
+        //console.log(r1.dest_b); // 'value_b'
+        expect(r1.dest_a).to.equal('value_a');
+        expect(r1.dest_b).to.equal('value_b');
+
+        var r2 = j2j.run(template, {
+            a: 'value_a',
+            b: 'value_b',
+            c: 'available',
+            d: 'available'
+        });
+        //console.log(r2); // null
+        expect(r2).to.equal(null);
+    });
+
     it('dataTransform - 0', function () {
         var nameTemplate = {
             content: {

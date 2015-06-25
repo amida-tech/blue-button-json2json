@@ -3,6 +3,8 @@
 - dataKeyPieceOverride functionality is removed
 - paths like 'a.b.c' where 'b' is array is not supported. use a.b[*].c with jsonave.
 - 'dataKeyFnOptions' replaced with 'context' option.
+- existsWhen now accepts arrays.
+- existsUnless is added.  Opposite of existsWhen
 
 # v1.5.0 - June 12, 2015
 
